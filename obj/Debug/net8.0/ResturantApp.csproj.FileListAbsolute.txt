@@ -285,3 +285,5 @@ C:\Users\HP\Desktop\ResturantApp\bin\Debug\net8.0\Microsoft.Extensions.Options.d
 C:\Users\HP\desktop\ResturantApp\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
 C:\Users\HP\desktop\ResturantApp\bin\Debug\net8.0\MailKit.dll
 C:\Users\HP\desktop\ResturantApp\bin\Debug\net8.0\MimeKit.dll
+C:\Users\HP\Desktop\ResturantApp\obj\Debug\net8.0\ResturantApp.sourcelink.json
+C:\Users\HP\Desktop\ResturantApp\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
