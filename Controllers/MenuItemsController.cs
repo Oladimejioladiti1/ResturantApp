@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ResturantApp.Models;
@@ -11,19 +7,25 @@ namespace ResturantApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+   
     public class MenuItemsController : ControllerBase
     {
         private readonly ResturantAppContext _context;
 
-        public MenuItemsController(ResturantAppContext context)
+        private readonly ILogger _logger;
+
+        public MenuItemsController(ResturantAppContext context, ILogger<MenuItemsController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: api/MenuItems
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<MenuItem>>> GetMenuItems()
         {
+            _logger.LogInformation("Getting all menuitems");
             return await _context.MenuItems.ToListAsync();
         }
 
@@ -31,6 +33,7 @@ namespace ResturantApp.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<MenuItem>> GetMenuItem(int id)
         {
+            _logger.LogInformation("Getting menuitem by id");
             var menuItem = await _context.MenuItems.FindAsync(id);
 
             if (menuItem == null)
@@ -44,8 +47,11 @@ namespace ResturantApp.Controllers
         // PUT: api/MenuItems/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> PutMenuItem(int id, MenuItem menuItem)
         {
+            _logger.LogInformation("updating menuitem by id");
             if (id != menuItem.MenuItemId)
             {
                 return BadRequest();
@@ -75,8 +81,11 @@ namespace ResturantApp.Controllers
         // POST: api/MenuItems
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Roles = "Admin")]
+
         public async Task<ActionResult<MenuItem>> PostMenuItem(MenuItem menuItem)
         {
+            _logger.LogInformation("Creating menuitems");
             _context.MenuItems.Add(menuItem);
             await _context.SaveChangesAsync();
 
@@ -85,8 +94,11 @@ namespace ResturantApp.Controllers
 
         // DELETE: api/MenuItems/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> DeleteMenuItem(int id)
         {
+            _logger.LogInformation("Deleting menuitem by id");
             var menuItem = await _context.MenuItems.FindAsync(id);
             if (menuItem == null)
             {

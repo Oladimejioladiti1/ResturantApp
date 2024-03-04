@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ResturantApp.Models;
 
@@ -10,9 +11,11 @@ using ResturantApp.Models;
 namespace ResturantApp.Migrations
 {
     [DbContext(typeof(ResturantAppContext))]
-    partial class ResturantAppContextModelSnapshot : ModelSnapshot
+    [Migration("20240228082737_IdentityAdd")]
+    partial class IdentityAdd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.2");
@@ -232,7 +235,12 @@ namespace ResturantApp.Migrations
                     b.Property<string>("MenuItemName")
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("StaffId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("MenuItemId");
+
+                    b.HasIndex("StaffId");
 
                     b.ToTable("MenuItems");
                 });
@@ -249,9 +257,14 @@ namespace ResturantApp.Migrations
                     b.Property<int>("MenuItemId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("StaffId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("OrderId");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("StaffId");
 
                     b.ToTable("Orders");
                 });
@@ -271,9 +284,14 @@ namespace ResturantApp.Migrations
                     b.Property<DateTime>("ReservationDateTime")
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("StaffId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("ReservationId");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("StaffId");
 
                     b.ToTable("Reservations");
                 });
@@ -284,7 +302,7 @@ namespace ResturantApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("StaffEmail")
+                    b.Property<string>("Role")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("StaffName")
@@ -346,6 +364,13 @@ namespace ResturantApp.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ResturantApp.Models.MenuItem", b =>
+                {
+                    b.HasOne("ResturantApp.Models.Staff", null)
+                        .WithMany("Items")
+                        .HasForeignKey("StaffId");
+                });
+
             modelBuilder.Entity("ResturantApp.Models.Order", b =>
                 {
                     b.HasOne("ResturantApp.Models.Customer", "Customer")
@@ -354,22 +379,37 @@ namespace ResturantApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ResturantApp.Models.Staff", null)
+                        .WithMany("Orders")
+                        .HasForeignKey("StaffId");
+
                     b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("ResturantApp.Models.Reservation", b =>
                 {
                     b.HasOne("ResturantApp.Models.Customer", "Customer")
-                        .WithMany("Reservations")
+                        .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("ResturantApp.Models.Staff", null)
+                        .WithMany("Reservations")
+                        .HasForeignKey("StaffId");
 
                     b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("ResturantApp.Models.Customer", b =>
                 {
+                    b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("ResturantApp.Models.Staff", b =>
+                {
+                    b.Navigation("Items");
+
                     b.Navigation("Orders");
 
                     b.Navigation("Reservations");

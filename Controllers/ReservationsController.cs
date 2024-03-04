@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ResturantApp.Models;
@@ -14,16 +9,19 @@ namespace ResturantApp.Controllers
     public class ReservationsController : ControllerBase
     {
         private readonly ResturantAppContext _context;
+        private readonly ILogger _logger;
 
-        public ReservationsController(ResturantAppContext context)
+        public ReservationsController(ResturantAppContext context, ILogger <ReservationsController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: api/Reservations
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Reservation>>> GetReservations()
         {
+            _logger.LogInformation("Getting all Reservations");
             return await _context.Reservations.ToListAsync();
         }
 
@@ -31,6 +29,7 @@ namespace ResturantApp.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Reservation>> GetReservation(int id)
         {
+            _logger.LogInformation("Getting Reservation by id");
             var reservation = await _context.Reservations.FindAsync(id);
 
             if (reservation == null)
@@ -46,6 +45,7 @@ namespace ResturantApp.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutReservation(int id, Reservation reservation)
         {
+            _logger.LogInformation("Updating Reservation");
             if (id != reservation.ReservationId)
             {
                 return BadRequest();
@@ -77,6 +77,7 @@ namespace ResturantApp.Controllers
         [HttpPost]
         public async Task<ActionResult<Reservation>> PostReservation(Reservation reservation)
         {
+            _logger.LogInformation("Posting Reservation");
             _context.Reservations.Add(reservation);
             await _context.SaveChangesAsync();
 
@@ -87,6 +88,7 @@ namespace ResturantApp.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteReservation(int id)
         {
+            _logger.LogInformation("Deleting Reservation");
             var reservation = await _context.Reservations.FindAsync(id);
             if (reservation == null)
             {

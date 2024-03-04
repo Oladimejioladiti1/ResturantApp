@@ -6,5 +6,6 @@ namespace ResturantApp.Models
         public int CustomerId { get; set; }
         public int MenuItemId { get; set; }
         public Customer?  Customer { get; set; }
+        public List<MenuItem>? menuItems { get; set; }
    }
 }

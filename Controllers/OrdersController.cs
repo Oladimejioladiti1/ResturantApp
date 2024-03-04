@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ResturantApp.Models;
@@ -14,16 +9,18 @@ namespace ResturantApp.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly ResturantAppContext _context;
-
-        public OrdersController(ResturantAppContext context)
+        private readonly ILogger _logger;
+        public OrdersController(ResturantAppContext context, ILogger <OrdersController> logger)
         {
             _context = context;
+            _logger = logger;   
         }
 
         // GET: api/Orders
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
         {
+            _logger.LogInformation("Getting all Orders");
             return await _context.Orders.ToListAsync();
         }
 
@@ -31,6 +28,7 @@ namespace ResturantApp.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Order>> GetOrder(int id)
         {
+            _logger.LogInformation("Getting Order by id");
             var order = await _context.Orders.FindAsync(id);
 
             if (order == null)
@@ -46,6 +44,7 @@ namespace ResturantApp.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutOrder(int id, Order order)
         {
+            _logger.LogInformation("Updating Orders");
             if (id != order.OrderId)
             {
                 return BadRequest();
@@ -77,6 +76,7 @@ namespace ResturantApp.Controllers
         [HttpPost]
         public async Task<ActionResult<Order>> PostOrder(Order order)
         {
+            _logger.LogInformation("Posting Orders");
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
@@ -87,6 +87,7 @@ namespace ResturantApp.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(int id)
         {
+            _logger.LogInformation("Deleting  Order");
             var order = await _context.Orders.FindAsync(id);
             if (order == null)
             {

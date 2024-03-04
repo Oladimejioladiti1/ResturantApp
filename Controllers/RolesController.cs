@@ -1,27 +1,29 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using ResturantApp.Models;
-using Microsoft.AspNetCore.Authorization;
 
 namespace ResturantApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+  //  [Authorize(Roles = "Admin")]
     public class RolesController : ControllerBase
     {
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly ILogger _logger;
 
-        public RolesController(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
+        public RolesController(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager, ILogger < RolesController>logger)
         {
             _roleManager = roleManager;
             _userManager = userManager;
+            _logger = logger;
         }
 
         [HttpGet]
         public IActionResult GetRoles()
         {
+            _logger.LogInformation("Getting all Roles ");
             var roles = _roleManager.Roles.ToList();
             return Ok(roles);
         }
@@ -29,6 +31,7 @@ namespace ResturantApp.Controllers
         [HttpGet("{roleId}")]
         public async Task<IActionResult> GetRole(string roleId)
         {
+            _logger.LogInformation("Getting Role by id");
             var role = await _roleManager.FindByIdAsync(roleId);
 
             if (role == null)
@@ -42,6 +45,7 @@ namespace ResturantApp.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateRole([FromBody] string roleName)
         {
+            _logger.LogInformation("Creating Role");
             var role = new IdentityRole(roleName);
             var result = await _roleManager.CreateAsync(role);
 
@@ -56,6 +60,7 @@ namespace ResturantApp.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateRole([FromBody] UpdateRoleModel model)
         {
+            _logger.LogInformation("Updating Role");
             var role = await _roleManager.FindByIdAsync(model.RoleId);
 
             if (role == null)
@@ -77,6 +82,7 @@ namespace ResturantApp.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteRole(string roleId)
         {
+            _logger.LogInformation("Deleting Role");
             var role = await _roleManager.FindByIdAsync(roleId);
 
             if (role == null)
@@ -97,6 +103,7 @@ namespace ResturantApp.Controllers
         [HttpPost("assign-role-to-user")]
         public async Task<IActionResult> AssignRoleToUser([FromBody] AssignRoleModel model)
         {
+            _logger.LogInformation("Assigning Role");
             var user = await _userManager.FindByIdAsync(model.UserId);
 
             if (user == null)

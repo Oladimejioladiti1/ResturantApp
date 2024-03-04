@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ResturantApp.Models;
@@ -15,15 +10,20 @@ namespace ResturantApp.Controllers
     {
         private readonly ResturantAppContext _context;
 
-        public CustomersController(ResturantAppContext context)
+
+        private readonly ILogger _logger;
+
+        public CustomersController(ResturantAppContext context, ILogger <CustomersController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: api/Customers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
         {
+            _logger.LogInformation("Getting all Customers");
             return await _context.Customers.ToListAsync();
         }
 
@@ -31,6 +31,8 @@ namespace ResturantApp.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Customer>> GetCustomer(int id)
         {
+            _logger.LogInformation("Getting Customer by Id ");
+
             var customer = await _context.Customers.FindAsync(id);
 
             if (customer == null)
@@ -46,6 +48,7 @@ namespace ResturantApp.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCustomer(int id, Customer customer)
         {
+            _logger.LogInformation("Updating Customers");
             if (id != customer.CustomerId)
             {
                 return BadRequest();
@@ -77,6 +80,7 @@ namespace ResturantApp.Controllers
         [HttpPost]
         public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
         {
+            _logger.LogInformation("Creating Customer");
             _context.Customers.Add(customer);
             await _context.SaveChangesAsync();
 
@@ -87,6 +91,7 @@ namespace ResturantApp.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCustomer(int id)
         {
+            _logger.LogInformation("Deleting Customer");
             var customer = await _context.Customers.FindAsync(id);
             if (customer == null)
             {

@@ -1,17 +1,11 @@
 ﻿using ResturantApp.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using ResturantApp.Services;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace IdentityPractice.Controllers
 {
@@ -23,18 +17,22 @@ namespace IdentityPractice.Controllers
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly EmailService _emailService;
         private readonly IConfiguration _configuration;
+        private readonly ILogger _logger;
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, EmailService emailService, IConfiguration configuration)
+        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, EmailService emailService, IConfiguration configuration, ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailService = emailService;
             _configuration = configuration;
+            _logger = logger;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(AuthModel model)
         {
+            _logger.LogInformation("Registering");
+
             var user = new IdentityUser { UserName = model.Email, Email = model.Email };
             var result = await _userManager.CreateAsync(user, model.Password);
 
@@ -62,6 +60,7 @@ namespace IdentityPractice.Controllers
         [HttpGet("verify-email")]
         public async Task<IActionResult> VerifyEmail(string userId, string token)
         {
+            _logger.LogInformation("Verifying Email");
             var user = await _userManager.FindByIdAsync(userId);
 
             if (user == null)
@@ -73,6 +72,10 @@ namespace IdentityPractice.Controllers
 
             if (result.Succeeded)
             {
+
+                //Email Confirmed. Add user to Role "User"
+                await _userManager.AddToRoleAsync(user, "User");
+
                 return Ok("Email verification successful.");
             }
 
@@ -84,6 +87,7 @@ namespace IdentityPractice.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(AuthModel model)
         {
+            _logger.LogInformation("Logging in ");
             var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: false, lockoutOnFailure: false);
 
             if (result.Succeeded)
@@ -100,6 +104,7 @@ namespace IdentityPractice.Controllers
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
+            _logger.LogInformation("Logging Out");
             await _signInManager.SignOutAsync();
             return Ok("Logged out");
         }
