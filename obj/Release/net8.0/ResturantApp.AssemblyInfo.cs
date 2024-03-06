@@ -11,10 +11,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("2fd1efde-055d-4e5f-804c-f3d48606cf04")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("ResturantApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fc96b53d401d822e4c462b057ef37892d1bbec10")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7cde35d149f64d5131895afa77d217511373135b")]
 [assembly: System.Reflection.AssemblyProductAttribute("ResturantApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ResturantApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

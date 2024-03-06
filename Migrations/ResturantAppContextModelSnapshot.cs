@@ -209,16 +209,47 @@ namespace ResturantApp.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("ResturantApp.Models.Address", b =>
+                {
+                    b.Property<int>("AddressId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AddressCity")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AddressCountry")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AddressCounty")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AddressStreet")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AddressZipCode")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("AddressId");
+
+                    b.ToTable("Address");
+                });
+
             modelBuilder.Entity("ResturantApp.Models.Customer", b =>
                 {
                     b.Property<int>("CustomerId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("AddressId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("CustomerName")
                         .HasColumnType("TEXT");
 
                     b.HasKey("CustomerId");
+
+                    b.HasIndex("AddressId");
 
                     b.ToTable("Customers");
                 });
@@ -229,8 +260,23 @@ namespace ResturantApp.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("MenuItemName")
+                    b.Property<string>("Allergens")
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("Availability")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Ingredients")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("OrderId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("MenuItemId");
 
@@ -253,35 +299,43 @@ namespace ResturantApp.Migrations
 
                     b.HasIndex("CustomerId");
 
+                    b.HasIndex("MenuItemId");
+
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("ResturantApp.Models.Reservation", b =>
+            modelBuilder.Entity("ResturantApp.Models.Review", b =>
                 {
-                    b.Property<int>("ReservationId")
+                    b.Property<int>("ReviewId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("CustomerId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("NumberOfGuests")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("ReservationDateTime")
+                    b.Property<DateTime>("DatePosted")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("ReservationId");
+                    b.Property<int?>("Rating")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ReviewId");
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Reservations");
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("ResturantApp.Models.Staff", b =>
                 {
                     b.Property<int>("StaffId")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AddressId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("StaffEmail")
@@ -291,6 +345,8 @@ namespace ResturantApp.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("StaffId");
+
+                    b.HasIndex("AddressId");
 
                     b.ToTable("Staffs");
                 });
@@ -346,6 +402,17 @@ namespace ResturantApp.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ResturantApp.Models.Customer", b =>
+                {
+                    b.HasOne("ResturantApp.Models.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Address");
+                });
+
             modelBuilder.Entity("ResturantApp.Models.Order", b =>
                 {
                     b.HasOne("ResturantApp.Models.Customer", "Customer")
@@ -354,13 +421,21 @@ namespace ResturantApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ResturantApp.Models.MenuItem", "MenuItem")
+                        .WithMany("Order")
+                        .HasForeignKey("MenuItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Customer");
+
+                    b.Navigation("MenuItem");
                 });
 
-            modelBuilder.Entity("ResturantApp.Models.Reservation", b =>
+            modelBuilder.Entity("ResturantApp.Models.Review", b =>
                 {
                     b.HasOne("ResturantApp.Models.Customer", "Customer")
-                        .WithMany("Reservations")
+                        .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -368,11 +443,25 @@ namespace ResturantApp.Migrations
                     b.Navigation("Customer");
                 });
 
+            modelBuilder.Entity("ResturantApp.Models.Staff", b =>
+                {
+                    b.HasOne("ResturantApp.Models.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Address");
+                });
+
             modelBuilder.Entity("ResturantApp.Models.Customer", b =>
                 {
                     b.Navigation("Orders");
+                });
 
-                    b.Navigation("Reservations");
+            modelBuilder.Entity("ResturantApp.Models.MenuItem", b =>
+                {
+                    b.Navigation("Order");
                 });
 #pragma warning restore 612, 618
         }

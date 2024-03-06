@@ -6,12 +6,10 @@ namespace ResturantApp.Models
         public int StaffId { get; set; }
         public string? StaffName { get; set; }
         public string? StaffEmail { get; set; }
-      //  public string? Role { get; set; }
+        public int AddressId { get; set; }
 
-        //public List<Order>? Orders {get; set;}
-        //public List<MenuItem>?Items{get; set;}
-        //public List<Reservation>?Reservations{get; set;}
-        //}
+        public Address? Address { get; set; }
+      
     }
 }
 

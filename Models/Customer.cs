@@ -4,8 +4,11 @@ namespace ResturantApp.Models
     {
 public int CustomerId { get; set; }
         public string? CustomerName { get; set; }
-       public List<Order>? Orders { get; set; }
+        public int AddressId { get; set; }
 
-        public List<Reservation>? Reservations{get; set; }
+        public Address? Address { get; set; }
+        public List<Order>? Orders { get; set; }
+
+        
     }
 }

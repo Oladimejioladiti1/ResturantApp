@@ -22,7 +22,6 @@ namespace ResturantApp.Controllers
 
         // GET: api/MenuItems
         [HttpGet]
-        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<MenuItem>>> GetMenuItems()
         {
             _logger.LogInformation("Getting all menuitems");
@@ -47,7 +46,7 @@ namespace ResturantApp.Controllers
         // PUT: api/MenuItems/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
+       // [Authorize(Roles = "Admin")]
 
         public async Task<IActionResult> PutMenuItem(int id, MenuItem menuItem)
         {
@@ -81,7 +80,7 @@ namespace ResturantApp.Controllers
         // POST: api/MenuItems
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+       // [Authorize(Roles = "Admin")]
 
         public async Task<ActionResult<MenuItem>> PostMenuItem(MenuItem menuItem)
         {
@@ -94,7 +93,7 @@ namespace ResturantApp.Controllers
 
         // DELETE: api/MenuItems/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
 
         public async Task<IActionResult> DeleteMenuItem(int id)
         {
